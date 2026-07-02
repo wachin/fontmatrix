@@ -23,8 +23,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_FMFontDb_t {
-    QByteArrayData data[55];
-    char stringdata0[554];
+    QByteArrayData data[56];
+    char stringdata0[568];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -87,7 +87,8 @@ QT_MOC_LITERAL(50, 485, 15), // "setVisibleRoots"
 QT_MOC_LITERAL(51, 501, 5), // "roots"
 QT_MOC_LITERAL(52, 507, 17), // "clearVisibleRoots"
 QT_MOC_LITERAL(53, 525, 15), // "hasVisibleRoots"
-QT_MOC_LITERAL(54, 541, 12) // "visibleRoots"
+QT_MOC_LITERAL(54, 541, 12), // "visibleRoots"
+QT_MOC_LITERAL(55, 554, 13) // "isVisibleFont"
 
     },
     "FMFontDb\0tagsChanged\0\0Font\0FontItem*\0"
@@ -104,7 +105,7 @@ QT_MOC_LITERAL(54, 541, 12) // "visibleRoots"
     "flist\0countFilteredFonts\0insertFilteredFont\0"
     "item\0removeFilteredFont\0isFiltered\0"
     "setVisibleRoots\0roots\0clearVisibleRoots\0"
-    "hasVisibleRoots\0visibleRoots"
+    "hasVisibleRoots\0visibleRoots\0isVisibleFont"
 };
 #undef QT_MOC_LITERAL
 
@@ -114,7 +115,7 @@ static const uint qt_meta_data_FMFontDb[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      35,   14, // methods
+      36,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -122,43 +123,44 @@ static const uint qt_meta_data_FMFontDb[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,  189,    2, 0x06 /* Public */,
+       1,    0,  194,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    2,  190,    2, 0x0a /* Public */,
-       3,    1,  195,    2, 0x2a /* Public | MethodCloned */,
-       7,    0,  198,    2, 0x0a /* Public */,
-       9,    0,  199,    2, 0x0a /* Public */,
-      10,    0,  200,    2, 0x0a /* Public */,
-      11,    1,  201,    2, 0x0a /* Public */,
-      13,    2,  204,    2, 0x0a /* Public */,
-      13,    3,  209,    2, 0x0a /* Public */,
-      13,    2,  216,    2, 0x2a /* Public | MethodCloned */,
-      13,    2,  221,    2, 0x0a /* Public */,
-      23,    0,  226,    2, 0x0a /* Public */,
-      24,    0,  227,    2, 0x0a /* Public */,
-      25,    1,  228,    2, 0x0a /* Public */,
-      27,    1,  231,    2, 0x0a /* Public */,
-      28,    2,  234,    2, 0x0a /* Public */,
-      31,    2,  239,    2, 0x0a /* Public */,
+       3,    2,  195,    2, 0x0a /* Public */,
+       3,    1,  200,    2, 0x2a /* Public | MethodCloned */,
+       7,    0,  203,    2, 0x0a /* Public */,
+       9,    0,  204,    2, 0x0a /* Public */,
+      10,    0,  205,    2, 0x0a /* Public */,
+      11,    1,  206,    2, 0x0a /* Public */,
+      13,    2,  209,    2, 0x0a /* Public */,
+      13,    3,  214,    2, 0x0a /* Public */,
+      13,    2,  221,    2, 0x2a /* Public | MethodCloned */,
+      13,    2,  226,    2, 0x0a /* Public */,
+      23,    0,  231,    2, 0x0a /* Public */,
+      24,    0,  232,    2, 0x0a /* Public */,
+      25,    1,  233,    2, 0x0a /* Public */,
+      27,    1,  236,    2, 0x0a /* Public */,
+      28,    2,  239,    2, 0x0a /* Public */,
       31,    2,  244,    2, 0x0a /* Public */,
-      33,    2,  249,    2, 0x0a /* Public */,
-      34,    2,  254,    2, 0x0a /* Public */,
-      36,    1,  259,    2, 0x0a /* Public */,
-      37,    1,  262,    2, 0x0a /* Public */,
-      39,    0,  265,    2, 0x0a /* Public */,
-      40,    0,  266,    2, 0x0a /* Public */,
-      41,    1,  267,    2, 0x0a /* Public */,
-      41,    0,  270,    2, 0x2a /* Public | MethodCloned */,
-      43,    1,  271,    2, 0x0a /* Public */,
-      45,    0,  274,    2, 0x0a /* Public */,
-      46,    1,  275,    2, 0x0a /* Public */,
-      48,    1,  278,    2, 0x0a /* Public */,
-      49,    1,  281,    2, 0x0a /* Public */,
-      50,    1,  284,    2, 0x0a /* Public */,
-      52,    0,  287,    2, 0x0a /* Public */,
-      53,    0,  288,    2, 0x0a /* Public */,
-      54,    0,  289,    2, 0x0a /* Public */,
+      31,    2,  249,    2, 0x0a /* Public */,
+      33,    2,  254,    2, 0x0a /* Public */,
+      34,    2,  259,    2, 0x0a /* Public */,
+      36,    1,  264,    2, 0x0a /* Public */,
+      37,    1,  267,    2, 0x0a /* Public */,
+      39,    0,  270,    2, 0x0a /* Public */,
+      40,    0,  271,    2, 0x0a /* Public */,
+      41,    1,  272,    2, 0x0a /* Public */,
+      41,    0,  275,    2, 0x2a /* Public | MethodCloned */,
+      43,    1,  276,    2, 0x0a /* Public */,
+      45,    0,  279,    2, 0x0a /* Public */,
+      46,    1,  280,    2, 0x0a /* Public */,
+      48,    1,  283,    2, 0x0a /* Public */,
+      49,    1,  286,    2, 0x0a /* Public */,
+      50,    1,  289,    2, 0x0a /* Public */,
+      52,    0,  292,    2, 0x0a /* Public */,
+      53,    0,  293,    2, 0x0a /* Public */,
+      54,    0,  294,    2, 0x0a /* Public */,
+      55,    1,  295,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -198,6 +200,7 @@ static const uint qt_meta_data_FMFontDb[] = {
     QMetaType::Void,
     QMetaType::Bool,
     QMetaType::QStringList,
+    QMetaType::Bool, 0x80000000 | 4,   47,
 
        0        // eod
 };
@@ -263,6 +266,8 @@ void FMFontDb::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 34: { QStringList _r = _t->visibleRoots();
             if (_a[0]) *reinterpret_cast< QStringList*>(_a[0]) = std::move(_r); }  break;
+        case 35: { bool _r = _t->isVisibleFont((*reinterpret_cast< FontItem*(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -308,13 +313,13 @@ int FMFontDb::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 35)
+        if (_id < 36)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 35;
+        _id -= 36;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 35)
+        if (_id < 36)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 35;
+        _id -= 36;
     }
     return _id;
 }

@@ -149,6 +149,7 @@ class FMFontDb : public QObject, public QSqlDatabase
 		void clearVisibleRoots();
 		bool hasVisibleRoots() const;
 		QStringList visibleRoots() const;
+		bool isVisibleFont(FontItem* item) const;
 
 
 	private:

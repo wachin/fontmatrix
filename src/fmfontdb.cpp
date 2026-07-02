@@ -1006,7 +1006,13 @@ void FMFontDb::clearFilteredFonts()
 QList<FontItem*> FMFontDb::getFilteredFonts(bool familyOnly)
 {
 	if(!familyOnly)
+	{
+		currentFonts = applyVisibleRoots(currentFonts);
 		return currentFonts;
+	}
+
+	currentFonts = applyVisibleRoots(currentFonts);
+	currentFamiliesCache = applyVisibleRoots(currentFamiliesCache);
 
 	if(currentFamiliesCache.isEmpty() && (!currentFonts.isEmpty()))
 	{
@@ -1045,7 +1051,7 @@ void FMFontDb::setFilterdFonts(const QList<FontItem *> &flist)
 {
 	currentFonts.clear();
 	currentFamiliesCache.clear();
-	currentFonts = flist;
+	currentFonts = applyVisibleRoots(flist);
 }
 
 int FMFontDb::countFilteredFonts() const
@@ -1055,7 +1061,7 @@ int FMFontDb::countFilteredFonts() const
 
 void FMFontDb::insertFilteredFont(FontItem *item)
 {
-	if((item != 0) && (!currentFonts.contains(item)))
+	if((item != 0) && matchesVisibleRoots(item) && (!currentFonts.contains(item)))
 	{
 		currentFonts.append(item);
 		currentFamiliesCache.clear();
@@ -1087,6 +1093,8 @@ void FMFontDb::setVisibleRoots(const QStringList &roots)
 			m_visibleRoots << dir.absolutePath();
 		}
 	}
+	currentFonts = applyVisibleRoots(currentFonts);
+	currentFamiliesCache = applyVisibleRoots(currentFamiliesCache);
 }
 
 void FMFontDb::clearVisibleRoots()
@@ -1102,6 +1110,11 @@ bool FMFontDb::hasVisibleRoots() const
 QStringList FMFontDb::visibleRoots() const
 {
 	return m_visibleRoots;
+}
+
+bool FMFontDb::isVisibleFont(FontItem *item) const
+{
+	return matchesVisibleRoots(item);
 }
 
 bool FMFontDb::matchesVisibleRoots(FontItem *item) const
@@ -1139,7 +1152,6 @@ void FMFontDb::filterAllFonts()
 	currentFamiliesCache.clear();
 	currentFonts = AllFonts();
 }
-
 
 
 

@@ -37,7 +37,7 @@
 - [x] Mostrar la ruta completa de la colección activa, no sólo el nombre de carpeta.
 - [ ] Permitir abrir directamente carpetas como `album-fuentes/fuentes-extraidas` o `album-fuentes-espanol/fuentes-extraidas`.
 - [x] Añadir un menú con las colecciones abiertas recientemente.
-- [ ] Evitar que al abrir una colección se mezclen fuentes importadas antiguas que estén fuera del directorio activo.
+- [x] Evitar que al abrir una colección se mezclen fuentes importadas antiguas que estén fuera del directorio activo.
 - [ ] Añadir una forma explícita de “cerrar colección” además de `Show All Fonts`.
 - [ ] Permitir abrir varias colecciones y alternar entre ellas.
 - [ ] Permitir comparar dos colecciones entre sí.
