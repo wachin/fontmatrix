@@ -72,6 +72,7 @@ protected:
 private slots:
 	void fontBook();
 	void slotOpenCollectionDirectory();
+	void slotReloadCurrentCollection();
 	void slotShowAllCatalogFonts();
 	void slotActivateCurrents();
 	void slotDeactivateCurrents();
@@ -161,6 +162,7 @@ private:
 	QAction *newAct;
 	QAction *openAct;
 	QAction *openCollectionAct;
+	QAction *reloadCollectionAct;
 	QAction *showAllCatalogAct;
 	QAction *importFilesAction;
 	QAction *exitAct;

@@ -234,6 +234,14 @@ void typotek::initMatrix()
 
 	refreshCurrentFontSourceView();
 
+	QSettings settings;
+	QString lastCollectionDir(settings.value("Collections/LastOpenedDir", QString()).toString());
+	if(!lastCollectionDir.isEmpty() && QDir(lastCollectionDir).exists())
+	{
+		open(lastCollectionDir, true, false, false, false);
+		applyCollectionView(lastCollectionDir);
+	}
+
 	if(!hyphenator)
 	{
 		QSettings st;
@@ -538,6 +546,22 @@ void typotek::slotOpenCollectionDirectory()
 	applyCollectionView(selectedDir);
 }
 
+void typotek::slotReloadCurrentCollection()
+{
+	if(currentCollectionDir.isEmpty())
+		return;
+
+	if(!QDir(currentCollectionDir).exists())
+	{
+		statusBar()->showMessage(tr("The current collection directory is no longer available"), 4000);
+		return;
+	}
+
+	open(currentCollectionDir, true, false, false, false);
+	applyCollectionView(currentCollectionDir);
+	statusBar()->showMessage(tr("Collection reloaded from %1").arg(currentCollectionDir), 4000);
+}
+
 void typotek::slotShowAllCatalogFonts()
 {
 	clearCollectionView();
@@ -691,6 +715,11 @@ void typotek::createActions()
 	openCollectionAct->setToolTip( tr ( "Browse only the fonts contained in a chosen directory" ) );
 	scuts->add(openCollectionAct);
 	connect ( openCollectionAct, SIGNAL ( triggered() ), this, SLOT ( slotOpenCollectionDirectory() ) );
+
+	reloadCollectionAct = new QAction ( tr ( "Reload Current Collection" ), this );
+	reloadCollectionAct->setToolTip( tr ( "Reimport and refresh the currently opened font collection" ) );
+	scuts->add(reloadCollectionAct);
+	connect ( reloadCollectionAct, SIGNAL ( triggered() ), this, SLOT ( slotReloadCurrentCollection() ) );
 
 	showAllCatalogAct = new QAction ( tr ( "Show &All Fonts" ), this );
 	showAllCatalogAct->setToolTip( tr ( "Return to the full catalog of system and imported fonts" ) );
@@ -886,6 +915,7 @@ void typotek::createMenus()
 
 	fileMenu->addAction ( openAct );
 	fileMenu->addAction ( openCollectionAct );
+	fileMenu->addAction ( reloadCollectionAct );
 	fileMenu->addAction ( showAllCatalogAct );
 	fileMenu->addSeparator();
 	fileMenu->addAction ( importFilesAction );
@@ -1073,6 +1103,7 @@ void typotek::writeSettings()
 	settings.setValue( "Database/DbName",databaseDbName);
 	settings.setValue( "Database/User",databaseUser);
 	settings.setValue( "Database/Password",databasePassword);
+	settings.setValue("Collections/LastOpenedDir", currentCollectionDir);
 	
 	if(theMainView->selectedFont())
 		settings.setValue("CurrentFont", theMainView->selectedFont()->path());
@@ -2352,6 +2383,8 @@ void typotek::showToltalFilteredFonts()
 void typotek::applyCollectionView(const QString &dirPath)
 {
 	currentCollectionDir = QDir(dirPath).absolutePath();
+	QSettings settings;
+	settings.setValue("Collections/LastOpenedDir", currentCollectionDir);
 	FMFontDb::DB()->setVisibleRoots(QStringList() << currentCollectionDir);
 	refreshCurrentFontSourceView();
 	statusBar()->showMessage(tr("Collection view loaded from %1").arg(currentCollectionDir), 4000);
@@ -2382,6 +2415,9 @@ void typotek::refreshCurrentFontSourceView()
 
 	if(showAllCatalogAct)
 		showAllCatalogAct->setEnabled(!currentCollectionDir.isEmpty());
+
+	if(reloadCollectionAct)
+		reloadCollectionAct->setEnabled(!currentCollectionDir.isEmpty());
 }
 
 void typotek::presentFontName(QString s)
