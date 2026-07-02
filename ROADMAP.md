@@ -49,6 +49,7 @@
 - [ ] Añadir una opción para abrir colección sin importar fuentes nuevas, si ya fueron indexadas antes.
 - [ ] Añadir una opción para abrir una colección de forma no recursiva.
 - [ ] Añadir una opción para abrir sólo ciertos formatos (`.ttf`, `.otf`, `.pfb`) dentro de una colección.
+- [ ] Mostrar si está disponible la ruta 
 
 ## Mejoras técnicas
 
@@ -61,8 +62,6 @@
 
 ## Posibles extensiones grandes
 
-- [ ] Soporte nativo para carpetas como `album-fuentes` y `album-fuentes-espanol` como “proyectos de colección”.
 - [ ] Mostrar tarjetas previas o miniaturas similares a las generadas en los PDFs.
-- [ ] Añadir un modo de inspección orientado a empaquetadores de fuentes para Debian.
-- [ ] Permitir generar un índice HTML o PDF directamente desde Fontmatrix para la colección abierta.
+- [ ] Permitir generar un índice HTML desde Fontmatrix para la colección abierta.
 - [ ] Permitir filtrar dentro de una colección sólo las fuentes con soporte completo para español.
