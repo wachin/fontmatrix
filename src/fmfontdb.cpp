@@ -19,6 +19,7 @@
 #include <QSqlError>
 #include <QSqlDriver>
 #include <QDebug>
+#include <QDir>
 
 
 
@@ -294,7 +295,7 @@ QList< FontDBResult > FMFontDb::getValues ( Field field, const QList< FontItem *
 			if ( id > 0 )
 			{
 				FontDBResult fr = qMakePair( fontMap.value ( id ), query.value ( 1 ).toString() );
-				if(fr.first)
+				if(fr.first && lF.contains(fr.first))
 					ret << fr;
 			}
 		}
@@ -365,7 +366,7 @@ QList<FontDBResult> FMFontDb::getInfo ( const QList< FontItem * > & fonts, InfoI
 			if ( id > 0 )
 			{
 				FontDBResult fr = qMakePair( fontMap.value ( id ), query.value ( 1 ).toString() );
-				if(fr.first)
+				if(fr.first && (fonts.isEmpty() ? matchesVisibleRoots(fr.first) : fonts.contains(fr.first)))
 					ret << fr;
 			}
 		}
@@ -746,7 +747,11 @@ FontItem * FMFontDb::Font ( const QString & id , bool noTemporary )
 
 QList< FontItem * > FMFontDb::AllFonts()
 {
-	// 	if(!fontMap.isEmpty())
+	return applyVisibleRoots(fontMap.values());
+}
+
+QList< FontItem * > FMFontDb::GlobalAllFonts()
+{
 	return fontMap.values();
 
 }
@@ -759,7 +764,7 @@ QStringList FMFontDb::AllFontNames()
 QList< FontItem * > FMFontDb::FamilySet(const QString& family)
 {
 	QList< FontItem * > ret;
-	foreach(FontItem * f, fontMap.values())
+	foreach(FontItem * f, AllFonts())
 	{
 		if(f->family() == family)
 			ret << f;
@@ -887,7 +892,7 @@ QList< FontItem * > FMFontDb::Fonts ( const QString & whereString, Table table)
 				{
 					if( !fontMap.value(id) )
 						qDebug()<<"ERROR : DB contains references to id"<<id<<"which is not in fontmap";
-					else
+					else if(matchesVisibleRoots(fontMap.value(id)))
 					{
 						reg[id] = fontMap.value ( id );
 					}
@@ -1071,13 +1076,69 @@ bool FMFontDb::isFiltered(FontItem *item) const
 	return currentFonts.contains(item);
 }
 
+void FMFontDb::setVisibleRoots(const QStringList &roots)
+{
+	m_visibleRoots.clear();
+	foreach(QString root, roots)
+	{
+		if(!root.isEmpty())
+		{
+			QDir dir(root);
+			m_visibleRoots << dir.absolutePath();
+		}
+	}
+}
+
+void FMFontDb::clearVisibleRoots()
+{
+	m_visibleRoots.clear();
+}
+
+bool FMFontDb::hasVisibleRoots() const
+{
+	return !m_visibleRoots.isEmpty();
+}
+
+QStringList FMFontDb::visibleRoots() const
+{
+	return m_visibleRoots;
+}
+
+bool FMFontDb::matchesVisibleRoots(FontItem *item) const
+{
+	if((item == 0) || m_visibleRoots.isEmpty())
+		return item != 0;
+
+	const QString fontPath(QDir::cleanPath(item->path()));
+	foreach(QString root, m_visibleRoots)
+	{
+		const QString cleanRoot(QDir::cleanPath(root));
+		if((fontPath == cleanRoot) || fontPath.startsWith(cleanRoot + QDir::separator()))
+			return true;
+	}
+	return false;
+}
+
+QList<FontItem*> FMFontDb::applyVisibleRoots(const QList<FontItem *> &fonts) const
+{
+	if(m_visibleRoots.isEmpty())
+		return fonts;
+
+	QList<FontItem*> filtered;
+	foreach(FontItem* item, fonts)
+	{
+		if(matchesVisibleRoots(item))
+			filtered << item;
+	}
+	return filtered;
+}
+
 void FMFontDb::filterAllFonts()
 {
 	currentFonts.clear();
 	currentFamiliesCache.clear();
-	currentFonts = fontMap.values();
+	currentFonts = AllFonts();
 }
-
 
 
 

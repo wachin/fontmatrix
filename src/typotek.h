@@ -71,6 +71,8 @@ protected:
 
 private slots:
 	void fontBook();
+	void slotOpenCollectionDirectory();
+	void slotShowAllCatalogFonts();
 	void slotActivateCurrents();
 	void slotDeactivateCurrents();
 	void slotEditFont();
@@ -100,7 +102,7 @@ private slots:
 	void slotMatchRaster();
 
 public slots:
-	void open( QString path = QString(), bool recursive = true, bool announce = true, bool collect = false );
+	void open( QString path = QString(), bool recursive = true, bool announce = true, bool collect = false, bool confirm = true );
 	void importFiles();
 	void openList( QStringList files );
 	void slotCloseToSystray(bool isEnabled);
@@ -158,6 +160,8 @@ private:
 	QToolBar *editToolBar;
 	QAction *newAct;
 	QAction *openAct;
+	QAction *openCollectionAct;
+	QAction *showAllCatalogAct;
 	QAction *importFilesAction;
 	QAction *exitAct;
 	QAction *cutAct;
@@ -218,6 +222,7 @@ private:
 
 	QLabel *curFontPresentation;
 	QLabel *countFilteredFonts;
+	QLabel *currentCatalogLabel;
 
 	Systray *systray;
 
@@ -231,10 +236,14 @@ private:
 	bool m_familySchemeFreetype;
 	QString m_welcomeURL;
 	QString m_sysTagName;
+	QString currentCollectionDir;
 
 	void addFcDirItem(const QString &dirPath);
 	QStringList getSystemFontDirs();
 	QStringList sysFontList;
+	void applyCollectionView(const QString& dirPath);
+	void clearCollectionView();
+	void refreshCurrentFontSourceView();
 
 	RemoteDir *remoteDir;
 	QString m_remoteTmpDir;

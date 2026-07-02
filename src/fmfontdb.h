@@ -114,6 +114,7 @@ class FMFontDb : public QObject, public QSqlDatabase
 		FontItem* Font ( const QString& id , bool noTemporary = false );
 
 		QList<FontItem*> AllFonts();
+		QList<FontItem*> GlobalAllFonts();
 		QStringList AllFontNames();
 		QList<FontItem*> FamilySet(const QString& family);
 // 		FontItem* FirstFont();
@@ -144,6 +145,10 @@ class FMFontDb : public QObject, public QSqlDatabase
 		void insertFilteredFont(FontItem* item);
 		void removeFilteredFont(FontItem* item);
 		bool isFiltered(FontItem* item) const;
+		void setVisibleRoots(const QStringList& roots);
+		void clearVisibleRoots();
+		bool hasVisibleRoots() const;
+		QStringList visibleRoots() const;
 
 
 	private:
@@ -174,6 +179,10 @@ class FMFontDb : public QObject, public QSqlDatabase
 		QMap<QString, QMap<Field, QVariant> > rValueCache;
 
 		int transactionDeep;
+		QStringList m_visibleRoots;
+
+		bool matchesVisibleRoots(FontItem* item) const;
+		QList<FontItem*> applyVisibleRoots(const QList<FontItem*>& fonts) const;
 
 	signals:
 		void tagsChanged();

@@ -232,7 +232,7 @@ void typotek::initMatrix()
 	createStatusBar();
 	doConnect();
 
-	showToltalFilteredFonts();
+	refreshCurrentFontSourceView();
 
 	if(!hyphenator)
 	{
@@ -344,7 +344,7 @@ void typotek::closeEvent ( QCloseEvent *event )
 // if announce == true user will be shown a dialog of imported fonts
 // if announce == false and collect == true all fonts imported will be
 // collected and announced next time announce == true
-void typotek::open ( QString path, bool recursive, bool announce, bool collect )
+void typotek::open ( QString path, bool recursive, bool announce, bool collect, bool confirm )
 {
 	static QStringList nameList;
 	static QStringList tali; // tali gets reseted when announce = true then the shouldAskTali is also set to true
@@ -416,7 +416,7 @@ void typotek::open ( QString path, bool recursive, bool announce, bool collect )
 	
 	// It can happen that you wrongly select a dir, it is time to let the user cancel the import.
 	// I want it :) - pm
-	if ( /*( pathList.count() > 1 )
+	if ( confirm && /*( pathList.count() > 1 )
 		&&*/ ( QMessageBox::question ( this,
 	                                     QString ( "Fontmatrix - %1" ).arg ( tr ( "Confirmation" ) ) ,
 	                                     tr ( "Do you confirm you want to import %n font(s)?", "", pathList.count()),
@@ -517,6 +517,30 @@ void typotek::open ( QString path, bool recursive, bool announce, bool collect )
 		shouldAskTali = true;
 	}
 	emit newFontsArrived();
+}
+
+void typotek::slotOpenCollectionDirectory()
+{
+	QSettings settings;
+	QString dir = settings.value("Places/LastCollectionFolder", settings.value("Places/LastUsedFolder", QDir::homePath()).toString()).toString();
+	if(!QDir(dir).exists())
+		dir = QDir::homePath();
+
+	QString selectedDir = QFileDialog::getExistingDirectory(this, tr("Open Font Collection Directory"), dir, QFileDialog::ShowDirsOnly);
+	if(selectedDir.isEmpty())
+		return;
+
+	selectedDir = QDir(selectedDir).absolutePath();
+	settings.setValue("Places/LastCollectionFolder", selectedDir);
+	settings.setValue("Places/LastUsedFolder", selectedDir);
+
+	open(selectedDir, true, false, false, false);
+	applyCollectionView(selectedDir);
+}
+
+void typotek::slotShowAllCatalogFonts()
+{
+	clearCollectionView();
 }
 
 void typotek::importFiles()
@@ -661,6 +685,17 @@ void typotek::createActions()
 	openAct->setToolTip( tr ( "Import a directory" ) );
 	scuts->add(openAct);
 	connect ( openAct, SIGNAL ( triggered() ), this, SLOT ( open() ) );
+
+	openCollectionAct = new QAction ( QIcon ( ":/fontmatrix_import_icon" ), tr ( "Open Font &Collection..." ), this );
+	openCollectionAct->setShortcut ( Qt::CTRL + Qt::ALT + Qt::Key_O );
+	openCollectionAct->setToolTip( tr ( "Browse only the fonts contained in a chosen directory" ) );
+	scuts->add(openCollectionAct);
+	connect ( openCollectionAct, SIGNAL ( triggered() ), this, SLOT ( slotOpenCollectionDirectory() ) );
+
+	showAllCatalogAct = new QAction ( tr ( "Show &All Fonts" ), this );
+	showAllCatalogAct->setToolTip( tr ( "Return to the full catalog of system and imported fonts" ) );
+	scuts->add(showAllCatalogAct);
+	connect ( showAllCatalogAct, SIGNAL ( triggered() ), this, SLOT ( slotShowAllCatalogFonts() ) );
 
 	importFilesAction = new QAction(QIcon ( ":/fontmatrix_import_icon" ), tr ( "Import &Files..." ), this );
 	importFilesAction->setShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_O );
@@ -850,6 +885,9 @@ void typotek::createMenus()
 	fileMenu = menuBar()->addMenu ( tr ( "&File" ) );
 
 	fileMenu->addAction ( openAct );
+	fileMenu->addAction ( openCollectionAct );
+	fileMenu->addAction ( showAllCatalogAct );
+	fileMenu->addSeparator();
 	fileMenu->addAction ( importFilesAction );
 	fileMenu->addAction ( exportFontSetAct );
 	fileMenu->addSeparator();
@@ -929,6 +967,12 @@ void typotek::createStatusBar()
 	countFilteredFonts->setAlignment ( Qt::AlignRight );
 	countFilteredFonts->setFont ( statusFontFont );
 	statusBar()->addPermanentWidget ( countFilteredFonts );
+
+	currentCatalogLabel = new QLabel ( "" );
+	currentCatalogLabel->setFrameShape(QFrame::StyledPanel);
+	currentCatalogLabel->setAlignment ( Qt::AlignRight );
+	currentCatalogLabel->setFont ( statusFontFont );
+	statusBar()->addPermanentWidget ( currentCatalogLabel );
 
 	toggleMainViewButton = new QToolButton(this);
 	toggleMainViewButton->setText(tr("Browse Directories"));
@@ -2303,6 +2347,41 @@ void typotek::slotExecRecentScript(){}
 void typotek::showToltalFilteredFonts()
 {
 	countFilteredFonts->setText( tr( "Filtered Font(s): %n", "number of filtererd fonts showed in status bar", FMFontDb::DB()->countFilteredFonts() ) );
+}
+
+void typotek::applyCollectionView(const QString &dirPath)
+{
+	currentCollectionDir = QDir(dirPath).absolutePath();
+	FMFontDb::DB()->setVisibleRoots(QStringList() << currentCollectionDir);
+	refreshCurrentFontSourceView();
+	statusBar()->showMessage(tr("Collection view loaded from %1").arg(currentCollectionDir), 4000);
+}
+
+void typotek::clearCollectionView()
+{
+	currentCollectionDir.clear();
+	FMFontDb::DB()->clearVisibleRoots();
+	refreshCurrentFontSourceView();
+	statusBar()->showMessage(tr("Showing all system and imported fonts"), 4000);
+}
+
+void typotek::refreshCurrentFontSourceView()
+{
+	FMFontDb::DB()->filterAllFonts();
+	if(theMainView)
+		theMainView->refreshVisibleFonts();
+	showToltalFilteredFonts();
+
+	if(currentCatalogLabel)
+	{
+		if(currentCollectionDir.isEmpty())
+			currentCatalogLabel->setText(tr("Catalog: All fonts"));
+		else
+			currentCatalogLabel->setText(tr("Catalog: %1").arg(QFileInfo(currentCollectionDir).fileName()));
+	}
+
+	if(showAllCatalogAct)
+		showAllCatalogAct->setEnabled(!currentCollectionDir.isEmpty());
 }
 
 void typotek::presentFontName(QString s)

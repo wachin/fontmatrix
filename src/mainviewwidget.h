@@ -98,6 +98,7 @@ class MainViewWidget :  public QWidget, private Ui::MainView
 		void slotPreviewUpdateSize(int w);
 		void slotShowFamily(const QModelIndex& familyIdx);
 		void slotQuitFamily();
+		void refreshVisibleFonts();
 		
 		void slotDesactivateAll();
 		void slotActivateAll();

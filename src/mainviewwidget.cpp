@@ -71,6 +71,7 @@
 #include <QMutex>
 #include <QButtonGroup>
 #include <QInputDialog>
+#include <QMetaObject>
 
 // #include <QTimeLine>
 // #include <QGraphicsItemAnimation>
@@ -925,6 +926,14 @@ void MainViewWidget::slotQuitFamily()
 	previewStack->setCurrentIndex(0);
 }
 
+void MainViewWidget::refreshVisibleFonts()
+{
+	slotQuitFamily();
+	QMetaObject::invokeMethod(filterBar, "slotClearFilter", Qt::DirectConnection);
+	previewModel->resetBase(QList<FontItem*>());
+	previewModel->dataChanged();
+}
+
 //void MainViewWidget::slotFilterTag ( QString tag )
 //{
 //	int tIdx(filterBar->tagsCombo()->currentIndex());
@@ -1285,4 +1294,3 @@ void MainViewWidget::slotPreviewUpdateSize(int w)
 {
 	listView->setIconSize(QSize(w, 1.3 * typotek::getInstance()->getPreviewSize() * typotek::getInstance()->getDpiY() / 72.0));
 }
-
