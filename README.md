@@ -1,26 +1,26 @@
-# Fontmatrix Fork Qt5
+# Fontmatrix Qt5 Fork
 
-Fork de `fontmatrix` orientado a mantener el proyecto compilando con Qt5 y extenderlo para funcionar como visor de colecciones de fuentes tipograficas, no solo como visor de las fuentes instaladas en el sistema.
+This is a `fontmatrix` fork focused on keeping the project buildable with Qt5 and extending it so it can work as a font collection viewer, not only as a viewer for fonts installed in the operating system.
 
-Este fork ya compila en Linux y ya incorpora un modo de coleccion por carpeta.
+This fork currently builds on Linux and already includes a folder-based collection mode.
 
-## Estado actual
+## Current status
 
-- Compila con `cmake` y Qt5.
-- Mantiene la visualizacion tradicional de fuentes del sistema.
-- Permite abrir una carpeta como coleccion de fuentes.
-- Permite volver al catalogo completo con `File > Show All Fonts`.
-- Recuerda la ultima coleccion abierta.
-- Permite recargar la coleccion actual.
-- Muestra la ruta completa de la coleccion activa en la barra de estado.
-- Guarda colecciones recientes en `File > Recent Collections`.
-- Evita mezclar en modo coleccion fuentes antiguas que esten fuera de la carpeta activa.
+- Builds with `cmake` and Qt5.
+- Preserves the traditional system font browsing workflow.
+- Can open a folder as a font collection.
+- Can return to the full catalog with `File > Show All Fonts`.
+- Remembers the last opened collection.
+- Can reload the current collection.
+- Shows the full active collection path in the status bar.
+- Stores recent collections in `File > Recent Collections`.
+- Prevents old imported fonts outside the active folder from leaking into collection mode.
 
-El detalle funcional y las tareas pendientes estan en [ROADMAP.md](./ROADMAP.md).
+Functional details and pending work are tracked in [ROADMAP.md](./ROADMAP.md).
 
-## Dependencias necesarias
+## Required dependencies
 
-Estas son las dependencias necesarias para la compilacion base verificada en este fork sobre Debian/Ubuntu y derivados:
+These are the dependencies required for the base build that has already been verified in this fork on Debian/Ubuntu and derivatives:
 
 ```bash
 sudo apt update
@@ -38,87 +38,87 @@ sudo apt install -y \
   libfontconfig1-dev
 ```
 
-Notas:
+Notes:
 
-- `Qt5WebKitWidgets` es obligatorio con el codigo actual.
-- `libqt5sql5-sqlite` es importante para que funcione la base de datos SQLite usada por Fontmatrix.
-- `harfbuzz` y `hyphenate` no necesitan instalarse aparte para la compilacion base, porque en este arbol ya vienen integrados en el proyecto.
+- `Qt5WebKitWidgets` is required by the current codebase.
+- `libqt5sql5-sqlite` is important because Fontmatrix uses an SQLite database internally.
+- `harfbuzz` and `hyphenate` do not need to be installed separately for the verified base build, because they are already vendored in this tree.
 
-## Dependencias opcionales
+## Optional dependencies
 
-Estas no son necesarias para la compilacion base que ya fue verificada, pero el `CMakeLists.txt` conserva soporte opcional para ellas:
+These are not required for the verified base build, but the current `CMakeLists.txt` still contains optional support for them:
 
-- `PythonLibs` si se activa `-DWANT_PYTHONQT=true`
-- `ICU` si se activa `-DWANT_ICU=true`
-- `M17N` si se activa `-DWANT_M17N=true`
-- `PoDoFo` si se activa `-DWANT_PODOFO=true`
+- `PythonLibs` if `-DWANT_PYTHONQT=true` is enabled
+- `ICU` if `-DWANT_ICU=true` is enabled
+- `M17N` if `-DWANT_M17N=true` is enabled
+- `PoDoFo` if `-DWANT_PODOFO=true` is enabled
 
-En este fork no se ha dejado documentada una compilacion validada reciente para esas opciones opcionales, por lo que conviene activarlas solo si se van a trabajar especificamente.
+This fork does not currently document a recently verified build for those optional features, so they should only be enabled when specifically needed for development work.
 
-## Compilacion
+## Build
 
-Compilacion minima verificada:
+Minimum verified build:
 
 ```bash
 cmake -S . -B build
 cmake --build build -j4
 ```
 
-El binario queda en:
+The binary is generated at:
 
 ```bash
 build/src/fontmatrix
 ```
 
-Si se quiere instalar localmente:
+To install locally:
 
 ```bash
 sudo cmake --install build
 ```
 
-Por defecto el prefijo actual del proyecto es `/usr/local`.
+The current default install prefix is `/usr/local`.
 
-## Ejecucion
+## Run
 
-Desde el arbol de compilacion:
+From the build tree:
 
 ```bash
 ./build/src/fontmatrix
 ```
 
-## Flujo de trabajo recomendado
+## Recommended workflow
 
-1. Instalar dependencias.
-2. Configurar con `cmake -S . -B build`.
-3. Compilar con `cmake --build build -j4`.
-4. Probar manualmente el flujo de sistema y el flujo de coleccion.
-5. Revisar [ROADMAP.md](./ROADMAP.md) antes de continuar nuevas mejoras.
+1. Install dependencies.
+2. Configure with `cmake -S . -B build`.
+3. Build with `cmake --build build -j4`.
+4. Test both the system-font workflow and the collection workflow manually.
+5. Review [ROADMAP.md](./ROADMAP.md) before continuing new work.
 
-## Flujo manual que debe probarse
+## Manual workflow that should be tested
 
-Cada vez que se hagan cambios en el modo coleccion, conviene probar como minimo esto:
+Whenever collection mode is changed, at minimum test the following:
 
-1. Abrir Fontmatrix mostrando las fuentes del sistema.
-2. Ir a `File > Open Font Collection...`.
-3. Elegir una carpeta con `.ttf`, `.otf` o `.pfb`.
-4. Verificar que solo aparezcan fuentes de esa carpeta.
-5. Verificar que `File > Reload Current Collection` sigue funcionando.
-6. Verificar que `File > Recent Collections` reabre correctamente la carpeta.
-7. Verificar que `File > Show All Fonts` vuelve al catalogo global.
-8. Cerrar y abrir la aplicacion para comprobar que restaura la ultima coleccion.
+1. Open Fontmatrix showing system fonts.
+2. Go to `File > Open Font Collection...`.
+3. Select a folder containing `.ttf`, `.otf`, or `.pfb` files.
+4. Verify that only fonts from that folder are shown.
+5. Verify that `File > Reload Current Collection` still works.
+6. Verify that `File > Recent Collections` reopens the folder correctly.
+7. Verify that `File > Show All Fonts` returns to the global catalog.
+8. Close and reopen the application and confirm that the last collection is restored.
 
-## Archivos clave para continuar el desarrollo
+## Key files for continuing development
 
-- `CMakeLists.txt`: configuracion principal del proyecto.
-- `src/CMakeLists.txt`: fuentes, UI, MOC y enlace del ejecutable.
-- `src/typotek.cpp` y `src/typotek.h`: ventana principal, acciones de menu y estado general del modo coleccion.
-- `src/fmfontdb.cpp` y `src/fmfontdb.h`: base de datos interna y filtrado de fuentes visibles.
-- `src/mainviewwidget.cpp` y `src/mainviewwidget.h`: refresco de la vista principal y seleccion de fuentes.
-- `ROADMAP.md`: estado real del fork y siguientes pasos.
+- `CMakeLists.txt`: top-level project configuration.
+- `src/CMakeLists.txt`: sources, UI files, MOC setup, and executable linking.
+- `src/typotek.cpp` and `src/typotek.h`: main window, menu actions, and overall collection-mode state.
+- `src/fmfontdb.cpp` and `src/fmfontdb.h`: internal database and visible-font filtering.
+- `src/mainviewwidget.cpp` and `src/mainviewwidget.h`: main view refresh and font selection behavior.
+- `ROADMAP.md`: actual fork status and next steps.
 
-## Cambios ya introducidos en este fork
+## Changes already introduced in this fork
 
-Los cambios importantes hechos durante esta etapa se concentran en:
+The main changes made during this development stage are concentrated in:
 
 - `src/typotek.cpp`
 - `src/typotek.h`
@@ -127,29 +127,29 @@ Los cambios importantes hechos durante esta etapa se concentran en:
 - `src/mainviewwidget.cpp`
 - `src/mainviewwidget.h`
 
-En resumen, aqui se implemento el soporte para:
+In summary, this fork already implements support for:
 
-- abrir carpetas como colecciones,
-- alternar entre coleccion y catalogo global,
-- recordar la ultima coleccion,
-- recargar colecciones,
-- mostrar la ruta activa,
-- manejar colecciones recientes,
-- y restringir correctamente el subconjunto visible de fuentes.
+- opening folders as collections,
+- switching between collection mode and the global catalog,
+- remembering the last collection,
+- reloading collections,
+- showing the active path,
+- handling recent collections,
+- and correctly restricting the visible subset of fonts.
 
-## Cosas a tener en cuenta
+## Important caveats
 
-- El proyecto todavia arrastra bastantes advertencias de compilacion heredadas del codigo historico y de APIs antiguas de Qt.
-- Que compile no significa que todas las funciones historicas del programa esten ya revisadas bajo el nuevo modo coleccion.
-- Si se tocan filtros, familias, exportacion o recarga de fuentes, hay que comprobar que no se use accidentalmente el catalogo global donde deberia usarse el visible.
-- El proyecto todavia conserva archivos heredados como `README` e `INSTALL` del proyecto original; este `README.md` describe el estado practico de este fork.
+- The project still carries many build warnings inherited from the historical codebase and from old Qt APIs.
+- A successful build does not mean that every legacy feature has already been fully reviewed under the new collection mode.
+- If filters, family views, export features, or font reload behavior are changed, check carefully that they do not accidentally fall back to the global catalog when they should use the visible subset.
+- The repository still contains legacy files such as `README` and `INSTALL` from the original project. This `README.md` documents the practical current state of this fork.
 
-## Proximas mejoras sugeridas
+## Suggested next improvements
 
-Las siguientes mejoras prioritarias estan pendientes en el momento de escribir este archivo:
+The following priority items are still pending at the time of writing:
 
-- permitir abrir directamente carpetas como `album-fuentes/fuentes-extraidas`,
-- añadir una forma explicita de cerrar coleccion aparte de `Show All Fonts`,
-- revisar operaciones secundarias que aun puedan depender del catalogo global,
-- documentar pruebas manuales mas completas,
-- y, si el proyecto madura mas, introducir pruebas automatizadas.
+- allow opening folders such as `album-fuentes/fuentes-extraidas` directly as prepared collections,
+- add an explicit way to close a collection besides `Show All Fonts`,
+- review secondary operations that may still depend on the global catalog,
+- document more complete manual test procedures,
+- and, if the project matures further, introduce automated tests.
