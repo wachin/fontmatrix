@@ -34,9 +34,9 @@
 
 - [x] Recordar la última colección abierta y restaurarla al reiniciar.
 - [x] Añadir una acción `Reload Current Collection`.
-- [ ] Mostrar la ruta completa de la colección activa, no sólo el nombre de carpeta.
+- [x] Mostrar la ruta completa de la colección activa, no sólo el nombre de carpeta.
 - [ ] Permitir abrir directamente carpetas como `album-fuentes/fuentes-extraidas` o `album-fuentes-espanol/fuentes-extraidas`.
-- [ ] Añadir una vista o panel lateral con las colecciones abiertas recientemente.
+- [x] Añadir un menú con las colecciones abiertas recientemente.
 - [ ] Evitar que al abrir una colección se mezclen fuentes importadas antiguas que estén fuera del directorio activo.
 - [ ] Añadir una forma explícita de “cerrar colección” además de `Show All Fonts`.
 - [ ] Permitir abrir varias colecciones y alternar entre ellas.

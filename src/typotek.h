@@ -31,6 +31,7 @@
 #include <QLabel>
 #include <QThread>
 #include <QTime>
+#include <QList>
 
 #include "prefspaneldialog.h"
 
@@ -73,6 +74,7 @@ private slots:
 	void fontBook();
 	void slotOpenCollectionDirectory();
 	void slotReloadCurrentCollection();
+	void slotOpenRecentCollection();
 	void slotShowAllCatalogFonts();
 	void slotActivateCurrents();
 	void slotDeactivateCurrents();
@@ -136,6 +138,7 @@ private:
 	void createMenus();
 	void createToolBars();
 	void createStatusBar();
+	void updateRecentCollectionsMenu();
 	void readSettings();
 	void writeSettings();
 	bool maybeSave();
@@ -150,6 +153,7 @@ private:
 	QString curFile;
 
 	QMenu *fileMenu;
+	QMenu *recentCollectionsMenu;
 	QMenu *editMenu;
 	QMenu *servicesMenu;
 	QMenu *viewMenu;
@@ -164,6 +168,7 @@ private:
 	QAction *openCollectionAct;
 	QAction *reloadCollectionAct;
 	QAction *showAllCatalogAct;
+	QList<QAction*> recentCollectionActs;
 	QAction *importFilesAction;
 	QAction *exitAct;
 	QAction *cutAct;
@@ -246,6 +251,8 @@ private:
 	void applyCollectionView(const QString& dirPath);
 	void clearCollectionView();
 	void refreshCurrentFontSourceView();
+	void rememberRecentCollection(const QString& dirPath);
+	QStringList recentCollections() const;
 
 	RemoteDir *remoteDir;
 	QString m_remoteTmpDir;

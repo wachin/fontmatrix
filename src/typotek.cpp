@@ -546,6 +546,26 @@ void typotek::slotOpenCollectionDirectory()
 	applyCollectionView(selectedDir);
 }
 
+void typotek::slotOpenRecentCollection()
+{
+	QAction *action = qobject_cast<QAction*>(sender());
+	if(!action)
+		return;
+
+	QString selectedDir(action->data().toString());
+	if(selectedDir.isEmpty())
+		return;
+
+	if(!QDir(selectedDir).exists())
+	{
+		statusBar()->showMessage(tr("The selected recent collection is no longer available"), 4000);
+		return;
+	}
+
+	open(selectedDir, true, false, false, false);
+	applyCollectionView(selectedDir);
+}
+
 void typotek::slotReloadCurrentCollection()
 {
 	if(currentCollectionDir.isEmpty())
@@ -912,10 +932,12 @@ void typotek::createActions()
 void typotek::createMenus()
 {
 	fileMenu = menuBar()->addMenu ( tr ( "&File" ) );
+	recentCollectionsMenu = new QMenu ( tr ( "Recent Collections" ), this );
 
 	fileMenu->addAction ( openAct );
 	fileMenu->addAction ( openCollectionAct );
 	fileMenu->addAction ( reloadCollectionAct );
+	fileMenu->addMenu ( recentCollectionsMenu );
 	fileMenu->addAction ( showAllCatalogAct );
 	fileMenu->addSeparator();
 	fileMenu->addAction ( importFilesAction );
@@ -974,6 +996,7 @@ void typotek::createMenus()
 	helpMenu->addAction ( aboutAct );
 	helpMenu->addAction ( aboutQtAct );
 
+	updateRecentCollectionsMenu();
 }
 
 void typotek::createStatusBar()
@@ -2380,11 +2403,58 @@ void typotek::showToltalFilteredFonts()
 	countFilteredFonts->setText( tr( "Filtered Font(s): %n", "number of filtererd fonts showed in status bar", FMFontDb::DB()->countFilteredFonts() ) );
 }
 
+QStringList typotek::recentCollections() const
+{
+	QSettings settings;
+	return settings.value("Collections/RecentDirs").toStringList();
+}
+
+void typotek::rememberRecentCollection(const QString &dirPath)
+{
+	QString normalizedPath(QDir(dirPath).absolutePath());
+	QStringList dirs(recentCollections());
+	dirs.removeAll(normalizedPath);
+	dirs.prepend(normalizedPath);
+	while(dirs.count() > 10)
+		dirs.removeLast();
+
+	QSettings settings;
+	settings.setValue("Collections/RecentDirs", dirs);
+	updateRecentCollectionsMenu();
+}
+
+void typotek::updateRecentCollectionsMenu()
+{
+	if(!recentCollectionsMenu)
+		return;
+
+	recentCollectionsMenu->clear();
+	recentCollectionActs.clear();
+
+	QStringList dirs(recentCollections());
+	if(dirs.isEmpty())
+	{
+		QAction *emptyAction = recentCollectionsMenu->addAction(tr("No recent collections"));
+		emptyAction->setEnabled(false);
+		return;
+	}
+
+	foreach(const QString &dirPath, dirs)
+	{
+		QAction *recentAction = recentCollectionsMenu->addAction(dirPath);
+		recentAction->setData(dirPath);
+		recentAction->setToolTip(dirPath);
+		connect(recentAction, SIGNAL(triggered()), this, SLOT(slotOpenRecentCollection()));
+		recentCollectionActs << recentAction;
+	}
+}
+
 void typotek::applyCollectionView(const QString &dirPath)
 {
 	currentCollectionDir = QDir(dirPath).absolutePath();
 	QSettings settings;
 	settings.setValue("Collections/LastOpenedDir", currentCollectionDir);
+	rememberRecentCollection(currentCollectionDir);
 	FMFontDb::DB()->setVisibleRoots(QStringList() << currentCollectionDir);
 	refreshCurrentFontSourceView();
 	statusBar()->showMessage(tr("Collection view loaded from %1").arg(currentCollectionDir), 4000);
@@ -2408,9 +2478,15 @@ void typotek::refreshCurrentFontSourceView()
 	if(currentCatalogLabel)
 	{
 		if(currentCollectionDir.isEmpty())
+		{
 			currentCatalogLabel->setText(tr("Catalog: All fonts"));
+			currentCatalogLabel->setToolTip(QString());
+		}
 		else
-			currentCatalogLabel->setText(tr("Catalog: %1").arg(QFileInfo(currentCollectionDir).fileName()));
+		{
+			currentCatalogLabel->setText(tr("Catalog: %1").arg(currentCollectionDir));
+			currentCatalogLabel->setToolTip(currentCollectionDir);
+		}
 	}
 
 	if(showAllCatalogAct)
