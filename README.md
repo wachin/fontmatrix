@@ -31,6 +31,8 @@ Functional details and pending work are tracked in [ROADMAP.md](./ROADMAP.md).
 
 These are the dependencies required for the base build that has already been verified in this fork on Debian/Ubuntu and derivatives:
 
+For Debian 12
+
 ```bash
 sudo apt update
 sudo apt install -y \
@@ -45,6 +47,24 @@ sudo apt install -y \
   libqt5sql5-sqlite \
   libfreetype6-dev \
   libfontconfig1-dev
+```
+
+For Debian 13
+
+```
+sudo apt install -y \
+  build-essential \
+  cmake \
+  pkg-config \
+  qtbase5-dev \
+  qttools5-dev \
+  qttools5-dev-tools \
+  libqt5svg5-dev \
+  qtwebengine5-dev \
+  libqt5sql5-sqlite \
+  libqt5webenginewidgets5 \
+  libfreetype-dev \
+  libfontconfig1-dev 2>&1 | tail -30
 ```
 
 Notes:

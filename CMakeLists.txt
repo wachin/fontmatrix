@@ -113,7 +113,7 @@ find_package(Qt5Svg REQUIRED)
 find_package(Qt5Sql REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5PrintSupport REQUIRED)
-find_package(Qt5WebKitWidgets REQUIRED)
+find_package(Qt5WebEngineWidgets REQUIRED)
 find_package(Qt5LinguistTools REQUIRED)
 #>> Qt
 

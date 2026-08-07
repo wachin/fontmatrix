@@ -21,7 +21,31 @@
 #define HELPWIDGET_H
 
 #include <QDialog>
+#include <QWebEnginePage>
 #include <ui_help.h>
+
+class HelpWebEnginePage : public QWebEnginePage
+{
+	Q_OBJECT
+public:
+	explicit HelpWebEnginePage(QObject *parent = 0)
+		: QWebEnginePage(parent) {}
+
+signals:
+	void linkClicked(const QUrl &url);
+
+protected:
+	bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame) override
+	{
+		Q_UNUSED(isMainFrame);
+		if(type == NavigationTypeLinkClicked)
+		{
+			emit linkClicked(url);
+			return false;
+		}
+		return QWebEnginePage::acceptNavigationRequest(url, type, isMainFrame);
+	}
+};
 
 /**
 	@author Pierre Marchand <pierre@oep-h.com>

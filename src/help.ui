@@ -23,7 +23,7 @@
     <number>0</number>
    </property>
    <item row="0" column="1" colspan="5" >
-    <widget class="QWebView" native="1" name="theText" />
+    <widget class="QWebEngineView" native="1" name="theText" />
    </item>
    <item row="1" column="5" >
     <widget class="QPushButton" name="closeButton" >
@@ -73,9 +73,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QWebView</header>
+   <header>QWebEngineView</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

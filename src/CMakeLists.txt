@@ -1,6 +1,6 @@
 # Fontmatrix src/CMakeLists.txt v1
 
-set(QT_LIBRARIES Qt5::Core Qt5::Widgets Qt5::Svg Qt5::Sql Qt5::Xml Qt5::PrintSupport Qt5::WebKitWidgets)
+set(QT_LIBRARIES Qt5::Core Qt5::Widgets Qt5::Svg Qt5::Sql Qt5::Xml Qt5::PrintSupport Qt5::WebEngineWidgets)
 
 set(fontmatrix_SRCS
 ${CMAKE_CURRENT_SOURCE_DIR}/aboutwidget.cpp

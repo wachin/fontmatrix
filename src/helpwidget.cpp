@@ -25,15 +25,17 @@ HelpWidget::HelpWidget(QWidget *parent)
  : QDialog(parent)
 {
 	setupUi(this);
-	
-	theText->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
+
+	HelpWebEnginePage *helpPage = new HelpWebEnginePage(theText);
+	theText->setPage(helpPage);
+
 	theText->load(QUrl::fromLocalFile(FMPaths::HelpFilePath()));
 	progressBar->hide();
 	
 	connect(closeButton,SIGNAL( clicked() ),this,SLOT( slotIsClosing() ));
 	connect(this,SIGNAL( finished(int) ),this,SLOT( slotIsClosing() ));
 	
-	connect( theText, SIGNAL(linkClicked ( const QUrl& )), this, SLOT(slotWebLink(const QUrl&)));
+	connect( helpPage, SIGNAL(linkClicked ( const QUrl& )), this, SLOT(slotWebLink(const QUrl&)));
 	connect( theText, SIGNAL(loadStarted () ),this,SLOT(slotWebStart()));
 	connect( theText, SIGNAL(loadProgress ( int )  ),this, SLOT(slotWebLoad(int)));
 	connect( theText, SIGNAL(loadFinished ( bool ) ),this,SLOT(slotWebFinished(bool)));
