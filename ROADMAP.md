@@ -35,12 +35,13 @@
 - [x] Recordar la última colección abierta y restaurarla al reiniciar.
 - [x] Añadir una acción `Reload Current Collection`.
 - [x] Mostrar la ruta completa de la colección activa, no sólo el nombre de carpeta.
-- [ ] Permitir abrir directamente carpetas como `album-fuentes/fuentes-extraidas` o `album-fuentes-espanol/fuentes-extraidas`.
+- [ ] Permitir abrir directamente carpetas como `album-fuentes/fuentes-extraidas` o `album-fuentes-espanol/fuentes-extraidas` o cualquier carpeta donde el usuario tenga una colección de fuentes tipográficas
+- [ ]  Permitir abrir directamente si están presentes las carpetas de las fuentes `~/.fonts`o `~/.local/share/fonts/`
 - [x] Añadir un menú con las colecciones abiertas recientemente.
 - [x] Evitar que al abrir una colección se mezclen fuentes importadas antiguas que estén fuera del directorio activo.
 - [ ] Añadir una forma explícita de “cerrar colección” además de `Show All Fonts`.
 - [ ] Permitir abrir varias colecciones y alternar entre ellas.
-- [ ] Permitir comparar dos colecciones entre sí.
+- [ ] Permitir comparar dos colecciones entre sí (si es que esto fuera posible)
 
 ## Mejoras de UX
 
@@ -62,6 +63,4 @@
 
 ## Posibles extensiones grandes
 
-- [ ] Mostrar tarjetas previas o miniaturas similares a las generadas en los PDFs.
-- [ ] Permitir generar un índice HTML desde Fontmatrix para la colección abierta.
-- [ ] Permitir filtrar dentro de una colección sólo las fuentes con soporte completo para español.
+- [ ] Permitir filtrar dentro de una colección sólo las fuentes con soporte completo para español (si es que esto fuera posible)
