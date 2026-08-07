@@ -746,6 +746,24 @@ void typotek::createActions()
 	scuts->add(showAllCatalogAct);
 	connect ( showAllCatalogAct, SIGNAL ( triggered() ), this, SLOT ( slotShowAllCatalogFonts() ) );
 
+	closeCollectionAct = new QAction ( tr ( "&Close Collection" ), this );
+	closeCollectionAct->setToolTip( tr ( "Close the current font collection and show all fonts" ) );
+	closeCollectionAct->setShortcut ( Qt::CTRL + Qt::Key_W );
+	scuts->add(closeCollectionAct);
+	connect ( closeCollectionAct, SIGNAL ( triggered() ), this, SLOT ( slotCloseCollection() ) );
+
+	openUserFontsDirAct = new QAction ( tr ( "Open ~/.fonts" ), this );
+	openUserFontsDirAct->setToolTip( tr ( "Open user fonts directory ~/.fonts as a collection" ) );
+	QDir userFontsDir(QDir::homePath() + "/.fonts");
+	openUserFontsDirAct->setEnabled(userFontsDir.exists());
+	connect ( openUserFontsDirAct, SIGNAL ( triggered() ), this, SLOT ( slotOpenUserFontsDir() ) );
+
+	openLocalShareFontsDirAct = new QAction ( tr ( "Open ~/.local/share/fonts" ), this );
+	openLocalShareFontsDirAct->setToolTip( tr ( "Open user fonts directory ~/.local/share/fonts as a collection" ) );
+	QDir localShareFontsDir(QDir::homePath() + "/.local/share/fonts");
+	openLocalShareFontsDirAct->setEnabled(localShareFontsDir.exists());
+	connect ( openLocalShareFontsDirAct, SIGNAL ( triggered() ), this, SLOT ( slotOpenLocalShareFontsDir() ) );
+
 	importFilesAction = new QAction(QIcon ( ":/fontmatrix_import_icon" ), tr ( "Import &Files..." ), this );
 	importFilesAction->setShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_O );
 	importFilesAction->setToolTip(tr("Import Files"));
@@ -933,10 +951,14 @@ void typotek::createMenus()
 {
 	fileMenu = menuBar()->addMenu ( tr ( "&File" ) );
 	recentCollectionsMenu = new QMenu ( tr ( "Recent Collections" ), this );
+	quickCollectionsMenu = new QMenu ( tr ( "Quick Collections" ), this );
 
 	fileMenu->addAction ( openAct );
 	fileMenu->addAction ( openCollectionAct );
 	fileMenu->addAction ( reloadCollectionAct );
+	fileMenu->addAction ( closeCollectionAct );
+	fileMenu->addSeparator();
+	fileMenu->addMenu ( quickCollectionsMenu );
 	fileMenu->addMenu ( recentCollectionsMenu );
 	fileMenu->addAction ( showAllCatalogAct );
 	fileMenu->addSeparator();
@@ -997,6 +1019,7 @@ void typotek::createMenus()
 	helpMenu->addAction ( aboutQtAct );
 
 	updateRecentCollectionsMenu();
+	updateQuickCollectionsMenu();
 }
 
 void typotek::createStatusBar()
@@ -2494,6 +2517,146 @@ void typotek::refreshCurrentFontSourceView()
 
 	if(reloadCollectionAct)
 		reloadCollectionAct->setEnabled(!currentCollectionDir.isEmpty());
+
+	if(closeCollectionAct)
+		closeCollectionAct->setEnabled(!currentCollectionDir.isEmpty());
+
+	if(currentCollectionDir.isEmpty())
+	{
+		setWindowTitle(tr("Fontmatrix"));
+		currentCatalogLabel->setStyleSheet(QString());
+	}
+	else
+	{
+		setWindowTitle(tr("Fontmatrix - Collection: %1").arg(QDir(currentCollectionDir).dirName()));
+		currentCatalogLabel->setStyleSheet("QLabel { background-color: #d4e6f1; color: #1a5276; font-weight: bold; padding: 2px 6px; border-radius: 3px; }");
+	}
+}
+
+void typotek::slotCloseCollection()
+{
+	clearCollectionView();
+}
+
+void typotek::slotOpenUserFontsDir()
+{
+	QString dirPath(QDir::homePath() + "/.fonts");
+	openCollectionDir(dirPath);
+}
+
+void typotek::slotOpenLocalShareFontsDir()
+{
+	QString dirPath(QDir::homePath() + "/.local/share/fonts");
+	openCollectionDir(dirPath);
+}
+
+void typotek::slotOpenQuickCollection()
+{
+	QAction *action = qobject_cast<QAction*>(sender());
+	if(!action)
+		return;
+
+	QString selectedDir(action->data().toString());
+	if(selectedDir.isEmpty())
+		return;
+
+	openCollectionDir(selectedDir);
+}
+
+void typotek::openCollectionDir(const QString &dirPath)
+{
+	if(!QDir(dirPath).exists())
+	{
+		statusBar()->showMessage(tr("The collection directory is no longer available: %1").arg(dirPath), 4000);
+		return;
+	}
+
+	QSettings settings;
+	settings.setValue("Places/LastCollectionFolder", dirPath);
+	settings.setValue("Places/LastUsedFolder", dirPath);
+
+	open(dirPath, true, false, false, false);
+	applyCollectionView(dirPath);
+}
+
+QStringList typotek::defaultQuickCollectionDirs() const
+{
+	QStringList dirs;
+	QString home(QDir::homePath());
+
+	QStringList candidates;
+	candidates << home + "/album-fuentes/fuentes-extraidas"
+	           << home + "/album-fuentes-espanol/fuentes-extraidas"
+	           << home + "/Fonts"
+	           << home + "/Mis fuentes"
+	           << home + "/fuentes"
+	           << home + "/Descargas/fuentes"
+	           << home + "/Downloads/fonts"
+	           << home + "/Documentos/fuentes"
+	           << home + "/Documents/fonts";
+
+	foreach(const QString &candidate, candidates)
+	{
+		if(QDir(candidate).exists())
+			dirs << candidate;
+	}
+
+	return dirs;
+}
+
+void typotek::updateQuickCollectionsMenu()
+{
+	if(!quickCollectionsMenu)
+		return;
+
+	quickCollectionsMenu->clear();
+	quickCollectionActs.clear();
+
+	quickCollectionsMenu->addAction(openUserFontsDirAct);
+	quickCollectionsMenu->addAction(openLocalShareFontsDirAct);
+
+	QStringList quickDirs(defaultQuickCollectionDirs());
+	if(!quickDirs.isEmpty())
+	{
+		quickCollectionsMenu->addSeparator();
+		foreach(const QString &dirPath, quickDirs)
+		{
+			QDir dir(dirPath);
+			QString displayName(dir.dirName().isEmpty() ? dirPath : dir.dirName());
+			QAction *quickAction = quickCollectionsMenu->addAction(
+				tr("Open %1").arg(displayName));
+			quickAction->setData(dirPath);
+			quickAction->setToolTip(dirPath);
+			connect(quickAction, SIGNAL(triggered()), this, SLOT(slotOpenQuickCollection()));
+			quickCollectionActs << quickAction;
+		}
+	}
+
+	QSettings settings;
+	QStringList customQuickDirs = settings.value("Collections/QuickDirs").toStringList();
+	if(!customQuickDirs.isEmpty())
+	{
+		quickCollectionsMenu->addSeparator();
+		foreach(const QString &dirPath, customQuickDirs)
+		{
+			if(!QDir(dirPath).exists())
+				continue;
+			QDir dir(dirPath);
+			QString displayName(dir.dirName().isEmpty() ? dirPath : dir.dirName());
+			QAction *quickAction = quickCollectionsMenu->addAction(
+				tr("Open %1").arg(displayName));
+			quickAction->setData(dirPath);
+			quickAction->setToolTip(dirPath);
+			connect(quickAction, SIGNAL(triggered()), this, SLOT(slotOpenQuickCollection()));
+			quickCollectionActs << quickAction;
+		}
+	}
+
+	if(quickCollectionsMenu->isEmpty())
+	{
+		QAction *emptyAction = quickCollectionsMenu->addAction(tr("No quick collections available"));
+		emptyAction->setEnabled(false);
+	}
 }
 
 void typotek::presentFontName(QString s)

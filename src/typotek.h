@@ -76,6 +76,10 @@ private slots:
 	void slotReloadCurrentCollection();
 	void slotOpenRecentCollection();
 	void slotShowAllCatalogFonts();
+	void slotCloseCollection();
+	void slotOpenUserFontsDir();
+	void slotOpenLocalShareFontsDir();
+	void slotOpenQuickCollection();
 	void slotActivateCurrents();
 	void slotDeactivateCurrents();
 	void slotEditFont();
@@ -154,6 +158,7 @@ private:
 
 	QMenu *fileMenu;
 	QMenu *recentCollectionsMenu;
+	QMenu *quickCollectionsMenu;
 	QMenu *editMenu;
 	QMenu *servicesMenu;
 	QMenu *viewMenu;
@@ -168,7 +173,11 @@ private:
 	QAction *openCollectionAct;
 	QAction *reloadCollectionAct;
 	QAction *showAllCatalogAct;
+	QAction *closeCollectionAct;
+	QAction *openUserFontsDirAct;
+	QAction *openLocalShareFontsDirAct;
 	QList<QAction*> recentCollectionActs;
+	QList<QAction*> quickCollectionActs;
 	QAction *importFilesAction;
 	QAction *exitAct;
 	QAction *cutAct;
@@ -253,6 +262,9 @@ private:
 	void refreshCurrentFontSourceView();
 	void rememberRecentCollection(const QString& dirPath);
 	QStringList recentCollections() const;
+	void updateQuickCollectionsMenu();
+	void openCollectionDir(const QString& dirPath);
+	QStringList defaultQuickCollectionDirs() const;
 
 	RemoteDir *remoteDir;
 	QString m_remoteTmpDir;

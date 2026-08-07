@@ -116,6 +116,7 @@ class FMFontDb : public QObject, public QSqlDatabase
 		QList<FontItem*> AllFonts();
 		QList<FontItem*> GlobalAllFonts();
 		QStringList AllFontNames();
+		QStringList VisibleFontNames();
 		QList<FontItem*> FamilySet(const QString& family);
 // 		FontItem* FirstFont();
 // 		FontItem* NextFont();

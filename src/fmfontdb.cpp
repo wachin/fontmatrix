@@ -761,6 +761,21 @@ QStringList FMFontDb::AllFontNames()
 	return cacheId.keys();
 }
 
+QStringList FMFontDb::VisibleFontNames()
+{
+	if(m_visibleRoots.isEmpty())
+		return cacheId.keys();
+
+	QStringList ret;
+	foreach(int id, fontMap.keys())
+	{
+		FontItem *item = fontMap.value(id);
+		if(matchesVisibleRoots(item))
+			ret << reverseCacheId.value(id);
+	}
+	return ret;
+}
+
 QList< FontItem * > FMFontDb::FamilySet(const QString& family)
 {
 	QList< FontItem * > ret;
