@@ -10,11 +10,20 @@ This fork currently builds on Linux and already includes a folder-based collecti
 - Preserves the traditional system font browsing workflow.
 - Can open a folder as a font collection.
 - Can return to the full catalog with `File > Show All Fonts`.
+- Has an explicit `File > Close Collection` action (shortcut **Ctrl+W**).
 - Remembers the last opened collection.
 - Can reload the current collection.
 - Shows the full active collection path in the status bar.
 - Stores recent collections in `File > Recent Collections`.
+- Provides `File > Quick Collections` with one-click access to:
+  - `~/.fonts` (if present)
+  - `~/.local/share/fonts` (if present)
+  - Auto-detected common folders such as `album-fuentes/fuentes-extraidas`, `~/Fonts`, `~/fuentes`, and similar.
+- Visual indicators for collection mode:
+  - Window title shows the active collection name.
+  - Status-bar catalog label is styled with a highlighted color.
 - Prevents old imported fonts outside the active folder from leaking into collection mode.
+- Database layer exposes both `AllFontNames()` (global catalog) and `VisibleFontNames()` (collection-filtered subset).
 
 Functional details and pending work are tracked in [ROADMAP.md](./ROADMAP.md).
 
@@ -102,10 +111,13 @@ Whenever collection mode is changed, at minimum test the following:
 2. Go to `File > Open Font Collection...`.
 3. Select a folder containing `.ttf`, `.otf`, or `.pfb` files.
 4. Verify that only fonts from that folder are shown.
-5. Verify that `File > Reload Current Collection` still works.
-6. Verify that `File > Recent Collections` reopens the folder correctly.
-7. Verify that `File > Show All Fonts` returns to the global catalog.
-8. Close and reopen the application and confirm that the last collection is restored.
+5. Verify that the window title and the status-bar catalog label show the active collection.
+6. Verify that `File > Close Collection` (or **Ctrl+W**) returns to the global catalog.
+7. Verify that `File > Reload Current Collection` still works.
+8. Verify that `File > Recent Collections` reopens the folder correctly.
+9. Verify that `File > Show All Fonts` returns to the global catalog.
+10. Verify that `File > Quick Collections` shows available entries such as `~/.fonts` or `~/.local/share/fonts` when those folders exist.
+11. Close and reopen the application and confirm that the last collection is restored.
 
 ## Key files for continuing development
 
@@ -131,11 +143,15 @@ In summary, this fork already implements support for:
 
 - opening folders as collections,
 - switching between collection mode and the global catalog,
+- explicitly closing a collection via `File > Close Collection` (**Ctrl+W**),
 - remembering the last collection,
 - reloading collections,
-- showing the active path,
-- handling recent collections,
-- and correctly restricting the visible subset of fonts.
+- showing the active path in the status bar,
+- handling recent collections via `File > Recent Collections`,
+- one-click opening of common folders via `File > Quick Collections` (including `~/.fonts`, `~/.local/share/fonts`, and auto-detected user font folders),
+- visual collection-mode indicators (window title and highlighted status-bar label),
+- correctly restricting the visible subset of fonts,
+- and exposing both global (`AllFontNames()`) and collection-filtered (`VisibleFontNames()`) APIs in the database layer.
 
 ## Important caveats
 
@@ -148,8 +164,10 @@ In summary, this fork already implements support for:
 
 The following priority items are still pending at the time of writing:
 
-- allow opening folders such as `album-fuentes/fuentes-extraidas` directly as prepared collections,
-- add an explicit way to close a collection besides `Show All Fonts`,
-- review secondary operations that may still depend on the global catalog,
+- allow opening several collections at once and switching between them,
+- add a dialog or banner explaining that the current filter is folder-based,
+- add an option to open a collection non-recursively,
+- add an option to open only certain formats (`.ttf`, `.otf`, `.pfb`) within a collection,
+- review secondary operations that may still depend on the global catalog (font reload, font-book export),
 - document more complete manual test procedures,
 - and, if the project matures further, introduce automated tests.
