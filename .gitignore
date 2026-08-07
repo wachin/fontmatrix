@@ -1,43 +1,72 @@
+# Fontmatrix
+# Generated build files and local development artifacts.
+# Keep source files in Git; keep out-of-source build trees out of Git.
 
-# /
-/bin
-/templates
-/Doxyfile
-/typotek.kdevelop
-/typotek.kdevelop.pcs
-/typotek.kdevses
-/Makefile
-/fontmatrix.kdevelop
-/fontmatrix.kdevelop.filelist
-/fontmatrix.kdevelop.pcs
-/fontmatrix.kdevses
+# CMake out-of-source builds
+/build/
+/build-*/
+/cmake-build-*/
 
+# CMake generated files (in case CMake is run in the source tree)
 CMakeCache.txt
 cmake_install.cmake
 CPackConfig.cmake
 CPackSourceConfig.cmake
 Makefile
 CMakeFiles/
+CTestTestfile.cmake
+install_manifest.txt
+compile_commands.json
+Testing/
 
-# /harfbuzz/
+# Qt generated files
+moc_*.cpp
+moc_*.cpp_parameters
+qrc_*.cpp
+ui_*.h
+qmake_image_collection.cpp
+*.qm
+
+# qmake generated files
+Makefile.Release
+Makefile.Debug
+.qmake.stash
+qmake.stash
+
+# Compiled objects, libraries and executables
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+
+# IDE / editor local files
+*.kdevelop.pcs
+*.kdevses
+.vscode/
+.idea/
+*.user
+*.user.*
+*~
+
+# Temporary / backup files
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# Legacy/generated Fontmatrix files
+/src/mainview.ui_BAK
+/src/fontmatrix_splashscreen.png
+
+# Nested HarfBuzz checkout/build artifacts used by the legacy tree
 /harfbuzz/.git
 /harfbuzz/tests
 /harfbuzz/.gitignore
 
-# /src/
-/src/Makefile
-/src/customscene.cpp
-/src/customscene.h
-/src/moc_*.cpp
-/src/qrc_*.cpp
-/src/moc_*.cpp_parameters
-/src/ui_*.h
-/src/*.qm
-/src/mainview.ui_BAK
-/src/Makefile.Release
-/src/Makefile.Debug
-/src/qmake_image_collection.cpp
-/src/fontmatrix_splashscreen.png
-
-# /src/messages/
-/src/messages/about.html~
+# Doxygen/generated documentation
+/Doxyfile
+/templates
